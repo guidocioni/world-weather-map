@@ -83,7 +83,7 @@ geojson_countries = dl.GeoJSON(data=statesData, id="geojson_countries",
 
 # Create the app.
 chroma = "https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"
-app = Dash(external_scripts=[chroma], prevent_initial_callbacks=True)
+app = Dash(external_scripts=[chroma], prevent_initial_callbacks=True, url_base_pathname='/weathermap/')
 server = app.server
 
 def serve_layout():
