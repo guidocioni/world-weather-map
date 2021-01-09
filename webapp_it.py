@@ -55,7 +55,7 @@ geojson_countries = dl.GeoJSON(data=statesData, id="geojson_countries",
 
 # Create the app.
 chroma = "https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"
-app = Dash(external_scripts=[chroma], prevent_initial_callbacks=True, url_base_pathname='/weathermap/')
+app = Dash(external_scripts=[chroma], prevent_initial_callbacks=True, url_base_pathname='/weathermap-it/')
 server = app.server
 
 cache = Cache(server, config={'CACHE_TYPE': 'filesystem', 
@@ -135,7 +135,7 @@ def serve_layout():
             dl.Overlay(dl.WMSTileLayer(url="https://maps.dwd.de/geoserver/ows?",
                                             layers="dwd:SAT_EU_RGB", 
                                             format="image/png", 
-                                            transparent=True, opacity=0.7,
+                                            transparent=True, opacity=0.6,
                                             version='1.3.0',
                                             detectRetina=True), name='sat eu', checked=True),
             dl.Overlay(dl.WMSTileLayer(id='radar_it',
@@ -143,7 +143,7 @@ def serve_layout():
                                        layers="radar:sri",
                                        transparent=True,
                                        format="image/png",
-                                       opacity=0.9,
+                                       opacity=1.0,
                                        version='1.1.1'),
             name='radar IT', checked=True),
             dl.Overlay([geojson, colorbar], name='obs', checked=True)
@@ -156,7 +156,7 @@ def serve_layout():
             "left": "10px", "z-index": "1000", "width": "800px",
             "background-color":'rgba(1, 1, 1, 0.3)'}),
         html.Div([dd_variable],
-            style={"position": "absolute", "top": "250px", "right": "16px", "z-index": "1000", "width": "100px"})
+            style={"position": "absolute", "top": "300px", "right": "16px", "z-index": "1000", "width": "100px"})
     ], style={'width': '100%', 'height': '90vh', 'margin': "auto", "display": "block", "position": "relative"})
 
     return layout
