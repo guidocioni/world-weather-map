@@ -101,7 +101,7 @@ def serve_layout():
     colorscale=csc_map[default_csc], id="colorbar", width=20, height=150, **minmax)
 
     geojson = dl.GeoJSON(data=get_data(default_variable), id="geojson", format="geobuf",
-                     zoomToBounds=True,  # when true, zooms to bounds when data changes
+                     #zoomToBounds=True,  # when true, zooms to bounds when data changes
                      cluster=True,  # when true, data are clustered
                      # how to draw clusters
                      clusterToLayer=ns("clusterToLayer"),
@@ -139,13 +139,13 @@ def serve_layout():
                                             version='1.3.0',
                                             detectRetina=True), name='sat eu', checked=True),
             dl.Overlay(dl.WMSTileLayer(id='radar_it',
-                                       url="http://www.protezionecivile.gov.it/geowebcache/service/wms?&time=%s" % latest,
-                                       layers="radar:sri",
+                                       url="http://www.protezionecivile.gov.it/geowebcache/service/wms?tiled=True&time=%s" % latest,
+                                       layers="radar:vmi",
                                        transparent=True,
                                        format="image/png",
                                        opacity=1.0,
                                        version='1.1.1'),
-            name='radar IT', checked=True),
+                      name='radar IT', checked=True),
             dl.Overlay([geojson, colorbar], name='obs', checked=True)
             ]),
             geojson_countries,
@@ -168,7 +168,6 @@ app.layout = serve_layout
                Output("colorbar", "min"), Output("colorbar", "max"), Output("geojson", "colorProp")],
               [Input("dd_variable", "value")])
 def update(variable):
-    print('triggered update')
     data, mm = get_data(variable), get_minmax(variable)
     hideout = dict(colorProp=variable, **mm)
 
@@ -179,7 +178,7 @@ def update(variable):
               [Input("time_slider", "value")],
               [State("date-div", "children")])
 def update_time(time, dates):
-    url = "http://www.protezionecivile.gov.it/geowebcache/service/wms?&time=%s" % dates[0][time]
+    url = "http://www.protezionecivile.gov.it/geowebcache/service/wms?tiled=True&time=%s" % dates[0][time]
 
     return [url]
 
