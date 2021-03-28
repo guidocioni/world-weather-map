@@ -1,0 +1,12 @@
+.marker-modified {
+    background-clip: padding-box;
+    border-radius: 20px;
+    }
+.marker-modified div {
+    text-align: center;
+    border-radius: 15px;
+    font: 10px "SF Mono", Arial, Helvetica, sans-serif;
+    }
+.marker-modified span {
+    line-height: 18px;
+    }
