@@ -62,14 +62,17 @@ window.myNamespace = Object.assign({}, window.myNamespace, {
         pointToLayer: function(feature, latlng, context){
             const {circleOptions, colorProp} = resolve(context.props.hideout, scatterDefaults,
                 ["circleOptions", "colorProp"])
-            label = String(feature.properties[colorProp].toFixed(0))
-            const icon = L.divIcon.scatter({
-                html: '<div><span>' + label + '</span></div>',
-                iconSize: L.point(20, 20),
-                className: "marker-modified",
-                color: getColor(context.props.hideout, feature.properties[colorProp])
-            });
-            return L.marker(latlng, {icon : icon})
+            if (typeof feature.properties[colorProp] !== 'undefined')
+            {
+                label = String(feature.properties[colorProp].toFixed(0))
+                const icon = L.divIcon.scatter({
+                    html: '<div><span>' + label + '</span></div>',
+                    iconSize: L.point(20, 20),
+                    className: "marker-modified",
+                    color: getColor(context.props.hideout, feature.properties[colorProp])
+                });
+                return L.marker(latlng, {icon : icon})
+            }
         },
 
         clusterToLayer: function (feature, latlng, index, context) {
@@ -78,15 +81,18 @@ window.myNamespace = Object.assign({}, window.myNamespace, {
             const leaves = index.getLeaves(feature.properties.cluster_id);
             // Choose just one value to be representative
             leave = leaves[0]
-            console.log(leave)
-            label = String(leave.properties[colorProp].toFixed(0))
-            const icon = L.divIcon.scatter({
-                html: '<div><span>' + label + '</span></div>',
-                iconSize: L.point(20, 20),
-                className: "marker-modified",
-                color: getColor(context.props.hideout, leave.properties[colorProp])
-            });
-            return L.marker(latlng, {icon : icon})
+            if (typeof leave.properties[colorProp] !== 'undefined')
+            {
+                label = String(leave.properties[colorProp].toFixed(0))
+                const icon = L.divIcon.scatter({
+                    html: '<div><span>' + label + '</span></div>',
+                    iconSize: L.point(20, 20),
+                    className: "marker-modified",
+                    color: getColor(context.props.hideout, leave.properties[colorProp])
+                });
+                return L.marker(latlng, {icon : icon})
+            }
+
         }
 
     },

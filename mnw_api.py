@@ -37,12 +37,12 @@ class MNWApi():
             data['contribution'] = 'service'
         
         response = requests.request("POST", url, data=data)
-        js = json.loads(response.text)
+        js = json.loads(response.content)
         
         if "access_token" in js:
             return js["access_token"]
         else:
-            sys.exit('Error in getting token: %s' % response.text) 
+            sys.exit('Error in getting token: %s' % response.content) 
 
     def get_realtime_station(self, station_code, data_quality=True):
         '''Get realtime data from a single station. 
@@ -53,7 +53,7 @@ class MNWApi():
         }
         response = requests.request("GET", url, headers=self.headers, params=data)
         
-        return pd.read_json(response.text)
+        return pd.read_json(response.content)
     
     def get_realtime_stations(self, country=None, region=None,
                              lat=None, lon=None, range_km=None, data_quality=True):
@@ -77,7 +77,7 @@ class MNWApi():
             
         response = requests.request("GET", url, headers=self.bulk_headers, params=data)
         
-        return pd.read_json(response.text)
+        return pd.read_json(response.content)
 
     def get_daily_station(self, station_code, observation_date="today", data_quality=True):
         '''Get daily data from a single station. 
@@ -89,7 +89,7 @@ class MNWApi():
         }
         response = requests.request("GET", url, headers=self.headers, params=data)
         
-        return pd.read_json(response.text)
+        return pd.read_json(response.content)
 
     def get_daily_stations(self, observation_date="today", country=None, region=None,
                              lat=None, lon=None, range_km=None, data_quality=True):
@@ -114,7 +114,7 @@ class MNWApi():
             
         response = requests.request("GET", url, headers=self.bulk_headers, params=data)
         
-        return pd.read_json(response.text)
+        return pd.read_json(response.content)
     
     def get_stations_meta(self, country=None, region=None,
                              lat=None, lon=None, range_km=None, data_quality=True):
@@ -136,7 +136,7 @@ class MNWApi():
             
         response = requests.request("GET", url, headers=self.bulk_headers, params=data)
         
-        return pd.read_json(response.text)
+        return pd.read_json(response.content)
     
     def get_archive_station(self, station_code, observation_date="today", data_quality=True):
         '''Get archived data from a single station. 
@@ -148,4 +148,4 @@ class MNWApi():
         }
         response = requests.request("GET", url, headers=self.bulk_headers, params=data)
         
-        return pd.read_json(response.text)
+        return pd.read_json(response.content)

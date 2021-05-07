@@ -20,9 +20,8 @@ mapURL = 'https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}{r}?
 attribution = '© <a href="https://www.mapbox.com/feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 
 
-with open("provinces_it.geojson", 'r') as f:
+with open("provinces_it.geojson", 'r', encoding='utf-8') as f:
     statesData = json.load(f)
-
 
 # Setup a few color scales.
 csc_map = {"Rainbow": ['purple', 'blue', 'green', 'yellow', 'red'],
@@ -60,8 +59,9 @@ app = Dash(__name__,
            url_base_pathname='/weathermap-it/')
 server = app.server
 
+
 cache = Cache(server, config={'CACHE_TYPE': 'filesystem',
-                              'CACHE_DIR': '/tmp'})
+                             'CACHE_DIR': '/tmp'})
 
 
 @cache.memoize(900)
@@ -77,7 +77,7 @@ def get_data(variable):
     # drop irrelevant columns
     df = df[['latitude', 'longitude', 'altitude',
              'name', 'observation_time_local', variable]]
-    dicts = df.to_dict('rows')
+    dicts = df.to_dict('records')
     for item in dicts:
         item["tooltip"] = "Measured at %s : %2.1f" % (
             item["observation_time_local"], item[variable])
@@ -104,7 +104,7 @@ def serve_layout():
     # # Create a colorbar.
     colorbar = dl.Colorbar(
         colorscale=csc_map[default_csc], id="colorbar", width=20, height=150, **minmax)
-
+    
     geojson = dl.GeoJSON(data=get_data(default_variable), id="geojson",
                          format='geobuf',
                          cluster=True,  # when true, data are clustered
@@ -113,7 +113,8 @@ def serve_layout():
                          # how to draw points
                          options=dict(pointToLayer=ns("pointToLayer")),
                          superClusterOptions=dict(radius=50),  # adjust cluster size
-                         hideout=dict(colorscale=csc_map[default_csc], colorProp=default_variable, **minmax))
+                         hideout=dict(colorscale=csc_map[default_csc],
+                                      colorProp=default_variable, **minmax))
 
     times = pd.date_range(start=pd.to_datetime('now', utc=True).round('15min') - pd.Timedelta('2hours'),
                           end=pd.to_datetime('now', utc=True).round(
@@ -171,13 +172,13 @@ app.layout = serve_layout
 
 
 @app.callback([Output("geojson", "hideout"), Output("geojson", "data"),
-               Output("colorbar", "min"), Output("colorbar", "max"), Output("geojson", "colorProp")],
+               Output("colorbar", "min"), Output("colorbar", "max")],
               [Input("dd_variable", "value")])
 def update(variable):
     data, mm = get_data(variable), get_minmax(variable)
-    hideout = dict(colorProp=variable, **mm)
+    hideout = dict(colorscale=csc_map[default_csc], colorProp=variable, **mm)
 
-    return hideout, data, mm["min"], mm["max"], variable
+    return hideout, data, mm["min"], mm["max"]
 
 
 @app.callback([Output("radar_it", "url")],
@@ -190,4 +191,4 @@ def update_time(time, dates):
 
 
 if __name__ == '__main__':
-    app.run_server()
+    server.run()
